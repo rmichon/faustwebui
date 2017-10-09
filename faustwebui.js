@@ -35,50 +35,132 @@ function createHgroup(parent,label){
   return group;
 }
 
-function createHslider(parent,curJSON){
-  var sliderDiv = document.createElement("div");
-  sliderDiv.setAttribute("class","hsliderContainer")
+// function essentially behaving like a class
+function Hslider(curJSON){
+  var hslider = document.createElement("div");
+  hslider.setAttribute("class","hslider")
+  hslider.value = curJSON[x].init;
+  hslider.min = curJSON[x].min;
+  hslider.max = curJSON[x].max;
+  hslider.step = curJSON[x].step;
+  hslider.address = curJSON[x].address;
+  hslider.clicked = 0;
 
   var sliderValue = document.createElement("div");
-  sliderValue.setAttribute("class","hsliderValue");
+  hslider.appendChild(sliderValue);
+  sliderValue.setAttribute("class","value");
   sliderValue.setAttribute("id",curJSON[x].address+"-val");
   sliderValue.innerHTML += curJSON[x].init;
-  sliderDiv.appendChild(sliderValue);
 
-  var slider = document.createElement("input");
-  slider.setAttribute("type","range");
-  slider.setAttribute("class",curJSON[x].type);
-  slider.setAttribute("value",curJSON[x].init);
-  slider.setAttribute("min",curJSON[x].min);
-  slider.setAttribute("max",curJSON[x].max);
-  slider.setAttribute("step",curJSON[x].step);
-  slider.setAttribute("oninput","rec(\""+curJSON[x].address+"\",event)");
-  sliderDiv.appendChild(slider);
+  var sliderBar = document.createElement("div");
+  hslider.appendChild(sliderBar);
+  sliderBar.setAttribute("class","bar");
+  sliderBar.addEventListener("mousedown",sliderClickDown,false);
+  sliderBar.addEventListener("mouseup",sliderClickUp,false);
+  sliderBar.addEventListener("mouseleave",sliderClickUp,false);
+  sliderBar.addEventListener("mousemove",sliderMove,false);
 
-  createUIElement(parent,sliderDiv,curJSON[x].label);
+  var sliderCursor = document.createElement("div");
+  sliderBar.appendChild(sliderCursor);
+  sliderCursor.setAttribute("class","cursor");
+
+  hslider.setNormValue = function(v){
+    if(v>=0 && v<=1){
+      var cursorXPos = v*100 + "%";
+      sliderCursor.style.left = cursorXPos;
+      var paramValue = v*(hslider.max-hslider.min);
+      sliderValue.innerHTML = paramValue.toFixed(2);
+      faustDSP.setParamValue(hslider.address,paramValue);
+    }
+  }
+
+  var cursorNormXPos = hslider.value/(hslider.max-hslider.min);
+  hslider.setNormValue(cursorNormXPos);
+
+  function sliderClickDown(e){
+    var cursorPos = (e.clientX - this.offsetLeft)/this.offsetWidth;
+    hslider.clicked = 1;
+    hslider.setNormValue(cursorPos);
+  }
+
+  function sliderClickUp(e){
+    if(hslider.clicked == 1){
+      hslider.clicked = 0;
+    }
+  }
+
+  function sliderMove(e){
+    if(hslider.clicked == 1){
+      var cursorPos = (e.clientX - this.offsetLeft)/this.offsetWidth;
+      hslider.setNormValue(cursorPos);
+    }
+  }
+
+  return hslider;
 }
 
-function createVslider(parent,curJSON){
-  var sliderDiv = document.createElement("div");
-  sliderDiv.setAttribute("class","vsliderContainer")
-
-  var slider = document.createElement("input");
-  slider.setAttribute("type","range");
-  slider.setAttribute("class",curJSON[x].type);
-  slider.setAttribute("value",curJSON[x].init);
-  slider.setAttribute("min",curJSON[x].min);
-  slider.setAttribute("max",curJSON[x].max);
-  slider.setAttribute("step",curJSON[x].step);
-  slider.setAttribute("oninput","rec(\""+curJSON[x].address+"\",event)");
-  sliderDiv.appendChild(slider);
+// function essentially behaving like a class
+function Vslider(curJSON){
+  var vslider = document.createElement("div");
+  vslider.setAttribute("class","vslider")
+  vslider.value = curJSON[x].init;
+  vslider.min = curJSON[x].min;
+  vslider.max = curJSON[x].max;
+  vslider.step = curJSON[x].step;
+  vslider.address = curJSON[x].address;
+  vslider.clicked = 0;
 
   var sliderValue = document.createElement("div");
-  sliderValue.setAttribute("class","vsliderValue");
+  vslider.appendChild(sliderValue);
+  sliderValue.setAttribute("class","value");
   sliderValue.setAttribute("id",curJSON[x].address+"-val");
   sliderValue.innerHTML += curJSON[x].init;
-  sliderDiv.appendChild(sliderValue);
 
-  createUIElement(parent,sliderDiv,curJSON[x].label);
+  var sliderBar = document.createElement("div");
+  vslider.appendChild(sliderBar);
+  sliderBar.setAttribute("class","bar");
+  sliderBar.addEventListener("mousedown",sliderClickDown,false);
+  sliderBar.addEventListener("mouseup",sliderClickUp,false);
+  sliderBar.addEventListener("mouseleave",sliderClickUp,false);
+  sliderBar.addEventListener("mousemove",sliderMove,false);
+
+  var sliderCursor = document.createElement("div");
+  sliderBar.appendChild(sliderCursor);
+  sliderCursor.setAttribute("class","cursor");
+
+  vslider.setNormValue = function(v){
+    if(v>=0 && v<=1){
+      var cursorXPos = v*100 + "%";
+      sliderCursor.style.left = cursorXPos;
+      var paramValue = v*(vslider.max-vslider.min);
+      sliderValue.innerHTML = paramValue.toFixed(2);
+      faustDSP.setParamValue(vslider.address,paramValue);
+    }
+  }
+
+  var cursorNormXPos = vslider.value/(vslider.max-vslider.min);
+  vslider.setNormValue(cursorNormXPos);
+
+  function sliderClickDown(e){
+    var cursorPos = (e.clientX - this.offsetLeft)/this.offsetWidth;
+    vslider.clicked = 1;
+    vslider.setNormValue(cursorPos);
+  }
+
+  function sliderClickUp(e){
+    if(vslider.clicked == 1){
+      vslider.clicked = 0;
+    }
+  }
+
+  function sliderMove(e){
+    if(vslider.clicked == 1){
+      var cursorPos = (e.clientX - this.offsetLeft)/this.offsetWidth;
+      vslider.setNormValue(cursorPos);
+    }
+  }
+
+  return vslider;
 }
 
 function parseFaustUI(curJSON,curDiv){
@@ -95,11 +177,13 @@ function parseFaustUI(curJSON,curDiv){
       parseFaustUI(curJSON[x].items,group);
     }
     else if(curJSON[x].type == "hslider"){ // TODO: "nentry" primitive
-      createHslider(curDiv,curJSON);
+      var hslider = new Hslider(curJSON);
+      createUIElement(curDiv,hslider,curJSON[x].label);
     }
     else if(curJSON[x].type == "vslider" ||
         curJSON[x].type == "nentry"){ // TODO: "nentry" primitive
-      createVslider(curDiv,curJSON);
+      var vslider = new Vslider(curJSON);
+      createUIElement(curDiv,vslider,curJSON[x].label);
     }
   }
   gray -= 25;
