@@ -21,30 +21,29 @@ function createUIElement(parent,child,label){
   return elementDiv;
 }
 
-function createVgroup(parent,label){
+function Vgroup(){
   var group = document.createElement("div");
   group.setAttribute("class","vgroup");
-  createUIElement(parent,group,label);
   return group;
 }
 
-function createHgroup(parent,label){
+function Hgroup(){
   var group = document.createElement("div");
   group.setAttribute("class","hgroup");
-  createUIElement(parent,group,label);
   return group;
 }
 
 // function essentially behaving like a class
 function Hslider(curJSON){
+  // TODO: ignoring step for now
   var hslider = document.createElement("div");
-  hslider.setAttribute("class","hslider")
+  hslider.setAttribute("class","hslider");
   hslider.value = Number(curJSON[x].init);
   hslider.min = Number(curJSON[x].min);
   hslider.max = Number(curJSON[x].max);
-  hslider.range = hslider.max-hslider.min;
+  hslider.range = hslider.max - hslider.min;
   hslider.step = Number(curJSON[x].step);
-  hslider.address = Number(curJSON[x].address);
+  hslider.address = curJSON[x].address;
   hslider.clicked = 0;
 
   var sliderValue = document.createElement("div");
@@ -102,12 +101,13 @@ function Hslider(curJSON){
 
 // function essentially behaving like a class
 function Vslider(curJSON){
+  // TODO: ignoring step for now
   var vslider = document.createElement("div");
-  vslider.setAttribute("class","vslider")
+  vslider.setAttribute("class","vslider");
   vslider.value = Number(curJSON[x].init);
   vslider.min = Number(curJSON[x].min);
   vslider.max = Number(curJSON[x].max);
-  vslider.range = vslider.max-vslider.min;
+  vslider.range = vslider.max - vslider.min;
   vslider.step = Number(curJSON[x].step);
   vslider.address = curJSON[x].address;
   vslider.clicked = 0;
@@ -166,27 +166,71 @@ function Vslider(curJSON){
   return vslider;
 }
 
+function Nentry(curJSON){
+  var nentry = document.createElement("input");
+  nentry.setAttribute("type","number");
+  nentry.setAttribute("class","nentry");
+  nentry.setAttribute("min",curJSON[x].min);
+  nentry.setAttribute("max",curJSON[x].max);
+  nentry.setAttribute("step",curJSON[x].step);
+  nentry.setAttribute("value",curJSON[x].init);
+  nentry.addEventListener("change",onValueChanged,false);
+
+  function onValueChanged(e){
+    // TODO: doesn't work not sure why
+    // faustDSP.setParamValue(curJSON[x].address,Number(e.target.value));
+  }
+
+  return nentry;
+}
+
+function Button(curJSON){
+  var button = document.createElement("input");
+  button.setAttribute("type","button");
+  button.setAttribute("class","button");
+  button.setAttribute("value",curJSON[x].label);
+  button.addEventListener("mousedown",onMouseDown,false);
+  button.addEventListener("mouseup",onMouseUp,false);
+
+  function onMouseDown(e){
+    faustDSP.setParamValue(curJSON[x].address,1);
+  }
+
+  function onMouseUp(e){
+    faustDSP.setParamValue(curJSON[x].address,0);
+  }
+
+  return button;
+}
+
 function parseFaustUI(curJSON,curDiv){
   gray += 25;
   for(x in curJSON){
     if(curJSON[x].type == "hgroup"){ // TODO: "group" primitive
-      var group = createHgroup(curDiv,curJSON[x].label);
-      //gray += 25;
+      var group = Hgroup(curJSON[x].label);
+      createUIElement(curDiv,group,curJSON[x].label);
       parseFaustUI(curJSON[x].items,group);
     }
     else if(curJSON[x].type == "vgroup"){ // TODO: "group" primitive
-      var group = createVgroup(curDiv,curJSON[x].label);
-      //gray += 25;
+      var group = Vgroup(curJSON[x].label);
+      createUIElement(curDiv,group,curJSON[x].label);
       parseFaustUI(curJSON[x].items,group);
     }
     else if(curJSON[x].type == "hslider"){ // TODO: "nentry" primitive
-      var hslider = new Hslider(curJSON);
+      var hslider = Hslider(curJSON);
       createUIElement(curDiv,hslider,curJSON[x].label);
     }
-    else if(curJSON[x].type == "vslider" ||
-        curJSON[x].type == "nentry"){ // TODO: "nentry" primitive
-      var vslider = new Vslider(curJSON);
+    else if(curJSON[x].type == "vslider"){ // TODO: "nentry" primitive
+      var vslider = Vslider(curJSON);
       createUIElement(curDiv,vslider,curJSON[x].label);
+    }
+    else if(curJSON[x].type == "nentry"){ // TODO: "nentry" primitive
+      var nentry = Nentry(curJSON);
+      createUIElement(curDiv,nentry,curJSON[x].label);
+    }
+    else if(curJSON[x].type == "button"){ // TODO: "button" primitive
+      var button = Button(curJSON);
+      curDiv.appendChild(button);
     }
   }
   gray -= 25;
