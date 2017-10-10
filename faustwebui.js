@@ -13,10 +13,12 @@ function createUIElement(parent,child,label){
   elementDiv.setAttribute("class","uiElement");
   elementDiv.style.backgroundColor = "rgb("+gray+","+gray+","+gray+")";
   elementDiv.appendChild(child);
-  var labelDiv = document.createElement("div");
-  labelDiv.setAttribute("class","label");
-  labelDiv.innerHTML = label;
-  elementDiv.appendChild(labelDiv);
+  if(label != "0x00"){
+    var labelDiv = document.createElement("div");
+    labelDiv.setAttribute("class","label");
+    labelDiv.innerHTML = label;
+    elementDiv.appendChild(labelDiv);
+  }
   parent.appendChild(elementDiv);
   return elementDiv;
 }
@@ -174,11 +176,11 @@ function Nentry(curJSON){
   nentry.setAttribute("max",curJSON[x].max);
   nentry.setAttribute("step",curJSON[x].step);
   nentry.setAttribute("value",curJSON[x].init);
+  nentry.address = curJSON[x].address;
   nentry.addEventListener("change",onValueChanged,false);
 
   function onValueChanged(e){
-    // TODO: doesn't work not sure why
-    // faustDSP.setParamValue(curJSON[x].address,Number(e.target.value));
+    faustDSP.setParamValue(nentry.address,Number(e.target.value));
   }
 
   return nentry;
@@ -189,18 +191,43 @@ function Button(curJSON){
   button.setAttribute("type","button");
   button.setAttribute("class","button");
   button.setAttribute("value",curJSON[x].label);
+  button.address = curJSON[x].address;
   button.addEventListener("mousedown",onMouseDown,false);
   button.addEventListener("mouseup",onMouseUp,false);
 
   function onMouseDown(e){
-    faustDSP.setParamValue(curJSON[x].address,1);
+    faustDSP.setParamValue(button.address,1);
   }
 
   function onMouseUp(e){
-    faustDSP.setParamValue(curJSON[x].address,0);
+    faustDSP.setParamValue(button.address,0);
   }
 
   return button;
+}
+
+function Checkbox(curJSON){
+  var status = 0;
+  var checkbox = document.createElement("input");
+  checkbox.setAttribute("type","button");
+  checkbox.setAttribute("class","button");
+  checkbox.setAttribute("value",curJSON[x].label);
+  checkbox.address = curJSON[x].address;
+  checkbox.addEventListener("mousedown",onMouseDown,false);
+
+  function onMouseDown(e){
+    if(status == 0){
+      status = 1;
+      checkbox.style.backgroundColor = "white";
+    }
+    else if(status == 1){
+      status = 0;
+      checkbox.style.backgroundColor = "rgb(220,220,220)";
+    }
+    faustDSP.setParamValue(checkbox.address,status);
+  }
+
+  return checkbox;
 }
 
 function parseFaustUI(curJSON,curDiv){
@@ -232,6 +259,10 @@ function parseFaustUI(curJSON,curDiv){
       var button = Button(curJSON);
       curDiv.appendChild(button);
     }
+    else if(curJSON[x].type == "checkbox"){ // TODO: "button" primitive
+      var checkbox = Checkbox(curJSON);
+      curDiv.appendChild(checkbox);
+    }
   }
   gray -= 25;
 }
@@ -239,5 +270,6 @@ function parseFaustUI(curJSON,curDiv){
 function buildFaustUI(fDSP){
   faustDSP = fDSP;
   var faustJSON = JSON.parse(faustDSP.getJSON());
+  console.log(faustDSP.getJSON());
   parseFaustUI(faustJSON.ui,document.getElementById("faustUI"));
 }
