@@ -39,11 +39,12 @@ function createHgroup(parent,label){
 function Hslider(curJSON){
   var hslider = document.createElement("div");
   hslider.setAttribute("class","hslider")
-  hslider.value = curJSON[x].init;
-  hslider.min = curJSON[x].min;
-  hslider.max = curJSON[x].max;
-  hslider.step = curJSON[x].step;
-  hslider.address = curJSON[x].address;
+  hslider.value = Number(curJSON[x].init);
+  hslider.min = Number(curJSON[x].min);
+  hslider.max = Number(curJSON[x].max);
+  hslider.range = hslider.max-hslider.min;
+  hslider.step = Number(curJSON[x].step);
+  hslider.address = Number(curJSON[x].address);
   hslider.clicked = 0;
 
   var sliderValue = document.createElement("div");
@@ -68,13 +69,13 @@ function Hslider(curJSON){
     if(v>=0 && v<=1){
       var cursorXPos = v*100 + "%";
       sliderCursor.style.left = cursorXPos;
-      var paramValue = v*(hslider.max-hslider.min);
+      var paramValue = v*hslider.range + hslider.min;
       sliderValue.innerHTML = paramValue.toFixed(2);
       faustDSP.setParamValue(hslider.address,paramValue);
     }
   }
 
-  var cursorNormXPos = hslider.value/(hslider.max-hslider.min);
+  var cursorNormXPos = hslider.value/hslider.range - hslider.min/hslider.range;
   hslider.setNormValue(cursorNormXPos);
 
   function sliderClickDown(e){
@@ -103,15 +104,15 @@ function Hslider(curJSON){
 function Vslider(curJSON){
   var vslider = document.createElement("div");
   vslider.setAttribute("class","vslider")
-  vslider.value = curJSON[x].init;
-  vslider.min = curJSON[x].min;
-  vslider.max = curJSON[x].max;
-  vslider.step = curJSON[x].step;
+  vslider.value = Number(curJSON[x].init);
+  vslider.min = Number(curJSON[x].min);
+  vslider.max = Number(curJSON[x].max);
+  vslider.range = vslider.max-vslider.min;
+  vslider.step = Number(curJSON[x].step);
   vslider.address = curJSON[x].address;
   vslider.clicked = 0;
 
   var sliderValue = document.createElement("div");
-  vslider.appendChild(sliderValue);
   sliderValue.setAttribute("class","value");
   sliderValue.setAttribute("id",curJSON[x].address+"-val");
   sliderValue.innerHTML += curJSON[x].init;
@@ -124,25 +125,27 @@ function Vslider(curJSON){
   sliderBar.addEventListener("mouseleave",sliderClickUp,false);
   sliderBar.addEventListener("mousemove",sliderMove,false);
 
+  vslider.appendChild(sliderValue);
+
   var sliderCursor = document.createElement("div");
   sliderBar.appendChild(sliderCursor);
   sliderCursor.setAttribute("class","cursor");
 
   vslider.setNormValue = function(v){
     if(v>=0 && v<=1){
-      var cursorXPos = v*100 + "%";
-      sliderCursor.style.left = cursorXPos;
-      var paramValue = v*(vslider.max-vslider.min);
+      var cursorYPos = (1-v)*100 + "%";
+      sliderCursor.style.top = cursorYPos;
+      var paramValue = v*vslider.range + vslider.min;
       sliderValue.innerHTML = paramValue.toFixed(2);
       faustDSP.setParamValue(vslider.address,paramValue);
     }
   }
 
-  var cursorNormXPos = vslider.value/(vslider.max-vslider.min);
-  vslider.setNormValue(cursorNormXPos);
+  var cursorNormYPos = vslider.value/vslider.range - vslider.min/vslider.range;
+  vslider.setNormValue(cursorNormYPos);
 
   function sliderClickDown(e){
-    var cursorPos = (e.clientX - this.offsetLeft)/this.offsetWidth;
+    var cursorPos = 1 - (e.clientY - this.offsetTop)/this.offsetHeight;
     vslider.clicked = 1;
     vslider.setNormValue(cursorPos);
   }
@@ -155,7 +158,7 @@ function Vslider(curJSON){
 
   function sliderMove(e){
     if(vslider.clicked == 1){
-      var cursorPos = (e.clientX - this.offsetLeft)/this.offsetWidth;
+      var cursorPos = 1 - (e.clientY - this.offsetTop)/this.offsetHeight;
       vslider.setNormValue(cursorPos);
     }
   }
