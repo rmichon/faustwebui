@@ -1,11 +1,11 @@
 
 /*
-Code generated with Faust version 2.4.2
+Code generated with Faust version 2.4.9
 Compilation options: -scal -ftz 2
 */
 
 function getJSONosc() {
-	return "{\"name\":\"osc\",\"version\":\"2.4.2\",\"options\":\"-scal -ftz 2\",\"size\":\"8356\",\"inputs\":\"0\",\"outputs\":\"1\",\"meta\":[{\"filters.lib/name\":\"Faust Filters Library\"},{\"filters.lib/version\":\"0.0\"},{\"maths.lib/author\":\"GRAME\"},{\"maths.lib/copyright\":\"GRAME\"},{\"maths.lib/license\":\"LGPL with exception\"},{\"maths.lib/name\":\"Faust Math Library\"},{\"maths.lib/version\":\"2.1\"},{\"name\":\"osc\"},{\"oscillators.lib/name\":\"Faust Oscillator Library\"},{\"oscillators.lib/version\":\"0.0\"}],\"ui\":[{\"type\":\"vgroup\",\"label\":\"osc\",\"items\":[{\"type\":\"hgroup\",\"label\":\"Oscillators\",\"meta\":[{\"0\":\"\"}],\"items\":[{\"type\":\"vgroup\",\"label\":\"Sawtooth\",\"items\":[{\"type\":\"hslider\",\"label\":\"Frequency\",\"address\":\"/osc/Oscillators/Sawtooth/Frequency\",\"index\":\"32\",\"init\":\"300\",\"min\":\"100\",\"max\":\"2000\",\"step\":\"0.01\"},{\"type\":\"hslider\",\"label\":\"Gain\",\"address\":\"/osc/Oscillators/Sawtooth/Gain\",\"index\":\"16\",\"init\":\"0.5\",\"min\":\"0\",\"max\":\"1\",\"step\":\"0.01\"}]},{\"type\":\"hgroup\",\"label\":\"Sine\",\"items\":[{\"type\":\"vslider\",\"label\":\"Frequency\",\"address\":\"/osc/Oscillators/Sine/Frequency\",\"index\":\"52\",\"init\":\"300\",\"min\":\"100\",\"max\":\"2000\",\"step\":\"0.01\"},{\"type\":\"vslider\",\"label\":\"Gain\",\"address\":\"/osc/Oscillators/Sine/Gain\",\"index\":\"44\",\"init\":\"0.5\",\"min\":\"0\",\"max\":\"1\",\"step\":\"0.01\"}]},{\"type\":\"vgroup\",\"label\":\"Square\",\"items\":[{\"type\":\"hslider\",\"label\":\"Frequency\",\"address\":\"/osc/Oscillators/Square/Frequency\",\"index\":\"4232\",\"meta\":[{\"test\":\"toto\"}],\"init\":\"300\",\"min\":\"100\",\"max\":\"2000\",\"step\":\"0.01\"},{\"type\":\"hslider\",\"label\":\"Gain\",\"address\":\"/osc/Oscillators/Square/Gain\",\"index\":\"4228\",\"init\":\"0.5\",\"min\":\"0\",\"max\":\"1\",\"step\":\"0.01\"}]},{\"type\":\"vgroup\",\"label\":\"Triangle\",\"items\":[{\"type\":\"nentry\",\"label\":\"Frequency\",\"address\":\"/osc/Oscillators/Triangle/Frequency\",\"index\":\"80\",\"init\":\"300\",\"min\":\"100\",\"max\":\"2000\",\"step\":\"0.01\"},{\"type\":\"nentry\",\"label\":\"Gain\",\"address\":\"/osc/Oscillators/Triangle/Gain\",\"index\":\"76\",\"init\":\"0.5\",\"min\":\"0\",\"max\":\"1\",\"step\":\"0.01\"}]}]},{\"type\":\"hgroup\",\"label\":\"0x00\",\"meta\":[{\"1\":\"\"}],\"items\":[{\"type\":\"button\",\"label\":\"Button\",\"address\":\"/osc/0x00/Button\",\"index\":\"12\"},{\"type\":\"checkbox\",\"label\":\"Checkbox\",\"address\":\"/osc/0x00/Checkbox\",\"index\":\"8\"}]}]}]}";
+	return "{\"name\":\"osc\",\"version\":\"2.4.9\",\"options\":\"-scal -ftz 2\",\"size\":\"8356\",\"inputs\":\"0\",\"outputs\":\"1\",\"meta\":[{\"filters.lib/name\":\"Faust Filters Library\"},{\"filters.lib/version\":\"0.0\"},{\"maths.lib/author\":\"GRAME\"},{\"maths.lib/copyright\":\"GRAME\"},{\"maths.lib/license\":\"LGPL with exception\"},{\"maths.lib/name\":\"Faust Math Library\"},{\"maths.lib/version\":\"2.1\"},{\"name\":\"osc\"},{\"oscillators.lib/name\":\"Faust Oscillator Library\"},{\"oscillators.lib/version\":\"0.0\"}],\"ui\":[{\"type\":\"vgroup\",\"label\":\"osc\",\"items\":[{\"type\":\"hgroup\",\"label\":\"Oscillators\",\"meta\":[{\"0\":\"\"}],\"items\":[{\"type\":\"vgroup\",\"label\":\"Sawtooth\",\"items\":[{\"type\":\"hslider\",\"label\":\"Frequency\",\"address\":\"/osc/Oscillators/Sawtooth/Frequency\",\"index\":\"32\",\"init\":\"300\",\"min\":\"100\",\"max\":\"2000\",\"step\":\"0.01\"},{\"type\":\"hslider\",\"label\":\"Gain\",\"address\":\"/osc/Oscillators/Sawtooth/Gain\",\"index\":\"16\",\"init\":\"0.5\",\"min\":\"0\",\"max\":\"1\",\"step\":\"0.01\"}]},{\"type\":\"hgroup\",\"label\":\"Sine\",\"items\":[{\"type\":\"vslider\",\"label\":\"Frequency\",\"address\":\"/osc/Oscillators/Sine/Frequency\",\"index\":\"52\",\"init\":\"300\",\"min\":\"100\",\"max\":\"2000\",\"step\":\"0.01\"},{\"type\":\"vslider\",\"label\":\"Gain\",\"address\":\"/osc/Oscillators/Sine/Gain\",\"index\":\"44\",\"init\":\"0.5\",\"min\":\"0\",\"max\":\"1\",\"step\":\"0.01\"}]},{\"type\":\"vgroup\",\"label\":\"Square\",\"items\":[{\"type\":\"hslider\",\"label\":\"Frequency\",\"address\":\"/osc/Oscillators/Square/Frequency\",\"index\":\"4232\",\"meta\":[{\"test\":\"toto\"}],\"init\":\"300\",\"min\":\"100\",\"max\":\"2000\",\"step\":\"0.01\"},{\"type\":\"hslider\",\"label\":\"Gain\",\"address\":\"/osc/Oscillators/Square/Gain\",\"index\":\"4228\",\"init\":\"0.5\",\"min\":\"0\",\"max\":\"1\",\"step\":\"0.01\"}]},{\"type\":\"vgroup\",\"label\":\"Triangle\",\"items\":[{\"type\":\"nentry\",\"label\":\"Frequency\",\"address\":\"/osc/Oscillators/Triangle/Frequency\",\"index\":\"80\",\"init\":\"300\",\"min\":\"100\",\"max\":\"2000\",\"step\":\"0.01\"},{\"type\":\"nentry\",\"label\":\"Gain\",\"address\":\"/osc/Oscillators/Triangle/Gain\",\"index\":\"76\",\"init\":\"0.5\",\"min\":\"0\",\"max\":\"1\",\"step\":\"0.01\"}]}]},{\"type\":\"hgroup\",\"label\":\"0x00\",\"meta\":[{\"1\":\"\"}],\"items\":[{\"type\":\"button\",\"label\":\"Button\",\"address\":\"/osc/0x00/Button\",\"index\":\"12\"},{\"type\":\"checkbox\",\"label\":\"Checkbox\",\"address\":\"/osc/0x00/Checkbox\",\"index\":\"8\"}]}]}]}";
 }
 /*
  faust2webaudio
@@ -193,8 +193,7 @@ faust.osc = function (dsp_instance, context, buffer_size) {
 
     sp.parse_items = function (items)
     {
-        var i;
-        for (i = 0; i < items.length; i++) {
+        for (var i = 0; i < items.length; i++) {
             sp.parse_item(items[i]);
         }
     }
@@ -472,17 +471,14 @@ faust.createosc = function(context, buffer_size, callback)
         "fmod": function(x, y) {
             return x % y;
         },
-        "log10": function(x) {
-            return window.Math.log(x) / window.Math.log(10);
-        },
         "remainder": function(x, y) {
-            return x - window.Math.round(x/y) * y;
+            return x - Math.round(x/y) * y;
         }
     };
 
     var importObject = { imports: { print: arg => console.log(arg) } }
 
-    importObject["global.Math"] = window.Math;
+    importObject["global.Math"] = Math;
     importObject["asm2wasm"] = asm2wasm;
 
     fetch('osc.wasm')

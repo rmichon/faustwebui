@@ -2,37 +2,47 @@
   width: 100%;
   height: 100%;
   color: white;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
 }
 
 #faustUI * {
-  display: flex;
   font-family: sans-serif;
 }
 
 .uiElement{
-  flex-direction: column;
+  display: flex;
   flex: 1;
+  flex-direction: column;
   border-style: solid;
   border-width: 1px;
   border-radius: 10px;
   padding: 10px;
   margin: 5px;
   align-items: stretch;
+  justify-content: center;
 }
 
 .label{
-  align-items: center;
-  justify-content: center;
+  text-align: center;
   padding: 1px;
 }
 
 .vgroup{
+  display: flex;
   flex-direction: column;
   flex:1;
 }
 
 .hgroup{
+  display: flex;
   flex-direction: row;
+  height: 100%;
 }
 
 .value{
@@ -40,8 +50,7 @@
   border-width: 1px;
   border-radius: 5px;
   width: 100%;
-  align-items: center;
-  justify-content: center;
+  text-align: center;
 }
 
 .bar{
@@ -68,49 +77,93 @@
 }
 
 .hslider{
-  flex-direction: row;
-  align-items: center;
-}
-
-.hslider .value{
-  width: 20%;
-  margin-right: 5px;
+  display: flex;
+  flex-direction: column;
 }
 
 .hslider .bar{
   align-items: center;
-  width: 100%;
+  margin-top: 7px;
+  margin-bottom: 7px;
   height: 14px;
-  margin-left: 5px;
 }
 
 .hslider .cursor{
   margin-left: -12px;
+  margin-top: -5px;
 }
 
 .vslider{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+}
+
+.vslider .value{
+  margin-top: 7px;
+  margin-bottom: 7px;
+}
+
+.vslider .bar{
+  width: 14px;
+  min-height: 200px;
+  height: 100%;
+}
+
+.vslider .cursor{
+  margin-top: -12px;
+  margin-left: -5px;
+  background: DodgerBlue;
+  cursor: pointer;
+}
+
+.knob{
   flex-direction: column;
   align-items: center;
 }
 
-.vslider .value{
+.knob .value{
   margin-top: 5px;
   margin-bottom: 5px;
 }
 
-.vslider .bar{
-  display: inline;
+.knob .base{
+  position: relative;
+  border-radius: 50%;
+  background: white;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+  cursor: pointer;
   justify-content: center;
-  width: 14px;
-  height: 200px;
+  width: 100%;
+  padding-top: 100%;
+  margin-top: 5px;
   margin-bottom: 5px;
+  align-items: center;
 }
 
-.vslider .cursor{
-  flex-shrink: 0;
-  margin-top: -12px;
-  background: DodgerBlue;
+.knob .base:hover {
+  opacity: 1;
+}
+
+.knob .handle{
+  position: absolute;
+  width: 100%;
+  height: 10px;
   cursor: pointer;
+  top: 50%;
+  margin-top: -5px;
+  /*transform: rotate(-90deg);*/
+}
+
+.knob .handle .tip{
+  background: DodgerBlue;
+  width: 50%;
+  height: 100%;
+  border-radius: 3px;
 }
 
 .nentry{

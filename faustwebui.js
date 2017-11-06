@@ -58,9 +58,9 @@ function Hslider(curJSON){
   hslider.appendChild(sliderBar);
   sliderBar.setAttribute("class","bar");
   sliderBar.addEventListener("mousedown",sliderClickDown,false);
-  sliderBar.addEventListener("mouseup",sliderClickUp,false);
-  sliderBar.addEventListener("mouseleave",sliderClickUp,false);
-  sliderBar.addEventListener("mousemove",sliderMove,false);
+  // mouse move and mouse up on all page to catch drag events outside of div
+  document.addEventListener("mousemove",sliderMove,false);
+  document.addEventListener("mouseup",sliderClickUp,false);
 
   var sliderCursor = document.createElement("div");
   sliderBar.appendChild(sliderCursor);
@@ -93,7 +93,7 @@ function Hslider(curJSON){
 
   function sliderMove(e){
     if(hslider.clicked == 1){
-      var cursorPos = (e.clientX - this.offsetLeft)/this.offsetWidth;
+      var cursorPos = (e.clientX - sliderBar.offsetLeft)/sliderBar.offsetWidth;
       hslider.setNormValue(cursorPos);
     }
   }
@@ -123,9 +123,9 @@ function Vslider(curJSON){
   vslider.appendChild(sliderBar);
   sliderBar.setAttribute("class","bar");
   sliderBar.addEventListener("mousedown",sliderClickDown,false);
-  sliderBar.addEventListener("mouseup",sliderClickUp,false);
-  sliderBar.addEventListener("mouseleave",sliderClickUp,false);
-  sliderBar.addEventListener("mousemove",sliderMove,false);
+  // mouse move and mouse up on all page to catch drag events outside of div
+  document.addEventListener("mousemove",sliderMove,false);
+  document.addEventListener("mouseup",sliderClickUp,false);
 
   vslider.appendChild(sliderValue);
 
@@ -160,12 +160,85 @@ function Vslider(curJSON){
 
   function sliderMove(e){
     if(vslider.clicked == 1){
-      var cursorPos = 1 - (e.clientY - this.offsetTop)/this.offsetHeight;
+      var cursorPos = 1 - (e.clientY - sliderBar.offsetTop)/sliderBar.offsetHeight;
       vslider.setNormValue(cursorPos);
     }
   }
 
   return vslider;
+}
+
+// function essentially behaving like a class
+function Knob(curJSON){
+  // TODO: ignoring step for now
+  var knob = document.createElement("div");
+  knob.setAttribute("class","knob");
+  knob.value = Number(curJSON[x].init);
+  knob.min = Number(curJSON[x].min);
+  knob.max = Number(curJSON[x].max);
+  knob.range = knob.max - knob.min;
+  knob.step = Number(curJSON[x].step);
+  knob.address = curJSON[x].address;
+  knob.clicked = 0;
+  knob.clickOriginY = 0;
+  knob.clickOrigAngle = 0;
+  knob.handleAngle = 0;
+
+  var knobValue = document.createElement("div");
+  knobValue.setAttribute("class","value");
+  knobValue.setAttribute("id",curJSON[x].address+"-val");
+  knobValue.innerHTML += curJSON[x].init;
+
+  var knobBase = document.createElement("div");
+  knob.appendChild(knobBase);
+  knobBase.setAttribute("class","base");
+  knobBase.addEventListener("mousedown",knobClickDown,false);
+  // mouse move and mouse up on all page to catch drag events outside of div
+  document.addEventListener("mousemove",knobMove,false);
+  document.addEventListener("mouseup",knobClickUp,false);
+
+  knob.appendChild(knobValue);
+
+  var knobHandle = document.createElement("div");
+  knobBase.appendChild(knobHandle);
+  knobHandle.setAttribute("class","handle");
+  var knobHandleTip = document.createElement("div");
+  knobHandle.appendChild(knobHandleTip);
+  knobHandleTip.setAttribute("class","tip");
+
+  knob.setNormValue = function(v){
+    if(v>=0 && v<=1){
+      knob.handleAngle = v*360-90;
+      knobHandle.style.transform = "rotate(" + knob.handleAngle + "deg)";
+      var paramValue = v*knob.range + knob.min;
+      knobValue.innerHTML = paramValue.toFixed(2);
+      faustDSP.setParamValue(knob.address,paramValue);
+    }
+  }
+
+  var handleNormYPos = knob.value/knob.range - knob.min/knob.range;
+  knob.setNormValue(handleNormYPos);
+
+  function knobClickDown(e){
+    knob.clicked = 1;
+    knob.clickOriginY = e.clientY;
+    knob.clickOrigAngle = knob.handleAngle;
+  }
+
+  function knobClickUp(e){
+    if(knob.clicked == 1){
+      knob.clicked = 0;
+    }
+  }
+
+  function knobMove(e){
+    if(knob.clicked == 1){
+      deltaY = knob.clickOriginY - e.clientY;
+      knob.setNormValue((knob.clickOrigAngle-deltaY+90)/360);
+    }
+  }
+
+  return knob;
 }
 
 function Nentry(curJSON){
@@ -233,33 +306,34 @@ function Checkbox(curJSON){
 function parseFaustUI(curJSON,curDiv){
   gray += 25;
   for(x in curJSON){
-    if(curJSON[x].type == "hgroup"){ // TODO: "group" primitive
+    if(curJSON[x].type == "hgroup"){
       var group = Hgroup(curJSON[x].label);
       createUIElement(curDiv,group,curJSON[x].label);
       parseFaustUI(curJSON[x].items,group);
     }
-    else if(curJSON[x].type == "vgroup"){ // TODO: "group" primitive
+    else if(curJSON[x].type == "vgroup"){
       var group = Vgroup(curJSON[x].label);
       createUIElement(curDiv,group,curJSON[x].label);
       parseFaustUI(curJSON[x].items,group);
     }
-    else if(curJSON[x].type == "hslider"){ // TODO: "nentry" primitive
-      var hslider = Hslider(curJSON);
+    else if(curJSON[x].type == "hslider"){
+      //var hslider = Hslider(curJSON);
+      var hslider = Knob(curJSON);
       createUIElement(curDiv,hslider,curJSON[x].label);
     }
-    else if(curJSON[x].type == "vslider"){ // TODO: "nentry" primitive
+    else if(curJSON[x].type == "vslider"){
       var vslider = Vslider(curJSON);
       createUIElement(curDiv,vslider,curJSON[x].label);
     }
-    else if(curJSON[x].type == "nentry"){ // TODO: "nentry" primitive
+    else if(curJSON[x].type == "nentry"){
       var nentry = Nentry(curJSON);
       createUIElement(curDiv,nentry,curJSON[x].label);
     }
-    else if(curJSON[x].type == "button"){ // TODO: "button" primitive
+    else if(curJSON[x].type == "button"){
       var button = Button(curJSON);
       curDiv.appendChild(button);
     }
-    else if(curJSON[x].type == "checkbox"){ // TODO: "button" primitive
+    else if(curJSON[x].type == "checkbox"){
       var checkbox = Checkbox(curJSON);
       curDiv.appendChild(checkbox);
     }
@@ -270,6 +344,6 @@ function parseFaustUI(curJSON,curDiv){
 function buildFaustUI(fDSP){
   faustDSP = fDSP;
   var faustJSON = JSON.parse(faustDSP.getJSON());
-  console.log(faustDSP.getJSON());
+  
   parseFaustUI(faustJSON.ui,document.getElementById("faustUI"));
 }
