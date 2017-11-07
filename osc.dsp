@@ -10,14 +10,15 @@ with{
 
 sawtooth = vgroup("Sawtooth",os.sawtooth(freq)*gain)
 with{
-  freq = hslider("Frequency",300,100,2000,0.01);
-  gain = hslider("Gain",0.5,0,1,0.01);
+  freq = hslider("Frequency[_width: 100][style:knob]",300,100,2000,0.01);
+  gain = hslider("Gain[_width: 200][style:knob]",0.5,0,1,0.01);
 };
 
-sine = hgroup("Sine",os.osc(freq)*gain)
+sine = hgroup("Sine",os.osc(freq)*gain : visual)
 with{
-  freq = vslider("Frequency",300,100,2000,0.01);
-  gain = vslider("Gain",0.5,0,1,0.01);
+  freq = vslider("[0]Frequency",300,100,2000,0.01);
+  gain = vslider("[1]Gain",0.5,0,1,0.01);
+  visual = an.amp_follower_ar(0.01,0.01) : vbargraph("[2]Output Gain",0,1);
 };
 
 triangle = vgroup("Triangle",os.triangle(freq)*gain)
@@ -28,11 +29,11 @@ with{
 
 square = vgroup("Square",os.square(freq)*gain)
 with{
-  freq = hslider("Frequency[test:toto]",300,100,2000,0.01);
+  freq = hslider("Frequency",300,100,2000,0.01);
   gain = hslider("Gain",0.5,0,1,0.01);
 };
 
-oscillators = hgroup("[0]Oscillators",(sawtooth+sine+triangle+square))*(hgroup("[1]",gate))
+oscillators = hgroup("[0]Oscillators",(sawtooth+sine+triangle+square))*(hgroup("[2]",gate)) : an.amp_follower_ar(0.01,0.01) : hbargraph("[1]Output Gain",0,1) 
 with{
   click = button("Button");
   hold = checkbox("Checkbox");

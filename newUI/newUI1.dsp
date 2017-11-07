@@ -17,6 +17,8 @@ import("stdfaust.lib");
   type: hslider;
   midi: ctrl 1;
   acc: 0 0 -10 0 10;
+  _width: 80%; // CSS key: the underscore allows to specify "raw" CSS keys
+  // asscoiated with a specific UI element
 }
 
 // Potentially, the various elements declared above could be declared in a 

@@ -77,6 +77,7 @@
 }
 
 .hslider{
+  /*TODO: perhaps change a non-flex system*/
   display: flex;
   flex-direction: column;
 }
@@ -189,4 +190,53 @@
 
 .button:active{
   background-color: white;
+}
+
+.hbargraph{
+  margin-top: 7px;
+  margin-bottom: 7px;
+}
+
+.hbargraph .barback{
+  position: relative;
+  border-radius: 5px;
+  background: white;
+  outline: none;
+  height: 14px;
+}
+
+.hbargraph .bartop{
+  position: absolute;
+  border-radius: 5px;
+  background: DodgerBlue;
+  outline: none;
+  height: 14px;
+  width: 50%;
+}
+
+.vbargraph{
+  margin-bottom: 14px;
+  height: 100%;
+  min-height: 200px;
+  align-items: center;
+  justify-content: center;
+}
+
+.vbargraph .barback{
+  position: relative;
+  border-radius: 5px;
+  background: white;
+  outline: none;
+  width: 14px;
+  height: 100%;
+  margin:auto;
+}
+
+.vbargraph .bartop{
+  position: absolute;
+  border-radius: 5px;
+  background: DodgerBlue;
+  outline: none;
+  width: 100%;
+  bottom: 0;
 }
