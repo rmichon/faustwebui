@@ -12,8 +12,8 @@ function startDSP(){
     function (node) {
       faustDSP = node;
       faustDSP.connect(audio_context.destination);
-      //console.log(faustDSP.getJSON());
-      buildFaustUI(faustDSP);
+      var faustUI = FaustUI(faustDSP);
+      document.body.appendChild(faustUI);
     });
 }
 
