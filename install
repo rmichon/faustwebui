@@ -1,0 +1,6 @@
+#!/bin/bash
+
+cp faust2wasmui /usr/local/bin
+cp faustui.js /usr/local/share/faust/webaudio
+cp faustui.css /usr/local/share/faust/webaudio
+cp index.html /usr/local/share/faust/webaudio/webapp.html
