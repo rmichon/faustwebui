@@ -15,7 +15,13 @@ let mainWindow
 
 function createWindow () {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 800, height: 600})
+  mainWindow = new BrowserWindow({
+    width: 800, 
+    height: 600,
+    webPreferences: { // TODO remove
+      preload: __dirname+'/test.js'
+    }
+  })
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
@@ -26,15 +32,29 @@ function createWindow () {
   
   var dspFaustNode = new faust.DspFaustNode();
   dspFaustNode.start();
-  var voice = dspFaustNode.keyOn(70,100);
-  //console.log("JS: " + dspFaustNode.getParamInit("/Polyphonic/Voices/sine/freq"));
+  
+  const {ipcMain} = require('electron')
+
+  ipcMain.on('getJSON', (event, arg) => {
+    event.returnValue = dspFaustNode.getJSONUI()
+  })
+  
+  ipcMain.on('setParamValue', (event, arg) => {
+    var colonIndex = arg.indexOf(":");
+    var paramAddress = arg.substring(0,colonIndex);
+    var paramValue = arg.substring(colonIndex+1,arg.length);
+    dspFaustNode.setParamValue(paramAddress,paramValue);
+  })
+  
+  ipcMain.on('getParamValue', (event, arg) => {
+    if(dspFaustNode != null) event.returnValue = dspFaustNode.getParamValue(arg);
+  })
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
-    dspFaustNode.deleteVoice(voice);
     dspFaustNode.stop();
     dspFaustNode = null;
     // Dereference the window object, usually you would store windows

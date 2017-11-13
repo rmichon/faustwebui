@@ -4,24 +4,32 @@
     - Implement [unit: db]
     - Implement [unit: xxx]
     - Implement [tooltip: xxx]
+    - It would be much more efficient to set parameters with their ID instead
+    of full address at least for the electron version.
 */
+
+const {ipcRenderer} = require('electron');
 
 // This function/class takes a Faust DSP node as its main argument and
 // returns a div containing the interface bound to the Faust DSP
 function FaustUI(faustDSP){
-  var faustJSON = JSON.parse(faustDSP.getJSON());
   var defaultColor = [50,50,50]; // TODO: could be a property defined with a metadata
   var mainDiv = document.createElement("div");
   mainDiv.setAttribute("id","faustUI");
-  parseFaustUI(faustJSON.ui,mainDiv);
-  return mainDiv;
-
-  function rec(address,event){
-    var val = parseFloat(event.target.value);
-    faustDSP.setParamValue(address,val);
-    var valueBox = document.getElementById(address+"-val");
-    valueBox.innerHTML = val;
+  if(faustDSP != null) {
+    var faustJSONUI = JSON.parse(faustDSP.getJSON()).ui;
   }
+  else {
+    var faustJSONUI = JSON.parse(ipcRenderer.sendSync('getJSON', '')).ui;
+    /*
+    var mainDiv = document.createElement("div");
+    mainDiv.setAttribute("id","tst");
+    mainDiv.innerHTML = ipcRenderer.sendSync('getJSON', ''); 
+    document.body.appendChild(mainDiv);
+    */
+  }
+  parseFaustUI(faustJSONUI,mainDiv);
+  return mainDiv;
 
   function createUIElement(parent,child,localJSON){
     var elementDiv = document.createElement("div");
@@ -88,7 +96,12 @@ function FaustUI(faustDSP){
         sliderCursor.style.left = cursorXPos;
         var paramValue = v*hslider.range + hslider.min;
         sliderValue.innerHTML = paramValue.toFixed(2);
-        faustDSP.setParamValue(hslider.address,paramValue);
+        if(faustDSP != null) {
+          faustDSP.setParamValue(hslider.address,paramValue);
+        }
+        else {
+          ipcRenderer.send('setParamValue', hslider.address + ":" + paramValue);
+        }
       }
     }
 
@@ -155,7 +168,12 @@ function FaustUI(faustDSP){
         sliderCursor.style.top = cursorYPos;
         var paramValue = v*vslider.range + vslider.min;
         sliderValue.innerHTML = paramValue.toFixed(2);
-        faustDSP.setParamValue(vslider.address,paramValue);
+        if(faustDSP != null) {
+          faustDSP.setParamValue(vslider.address,paramValue);
+        }
+        else {
+          ipcRenderer.send('setParamValue', vslider.address + ":" + paramValue);
+        }
       }
     }
 
@@ -239,7 +257,12 @@ function FaustUI(faustDSP){
         knobHandle.style.transform = "rotate(" + knob.handleAngle + "deg)";
         var paramValue = v*knob.range + knob.min;
         knobValue.innerHTML = paramValue.toFixed(2);
-        faustDSP.setParamValue(knob.address,paramValue);
+        if(faustDSP != null) {
+          faustDSP.setParamValue(knob.address,paramValue);
+        }
+        else {
+          ipcRenderer.send('setParamValue', knob.address + ":" + paramValue);
+        }
       }
     }
 
@@ -261,7 +284,7 @@ function FaustUI(faustDSP){
     function knobMove(e){
       if(knob.clicked == 1){
         deltaY = knob.clickOriginY - e.clientY;
-        knob.setNormValue((knob.clickOrigAngle-deltaY+90)/360);
+        knob.setNormValue((knob.clickOrigAngle+deltaY+90)/360);
       }
     }
 
@@ -280,7 +303,12 @@ function FaustUI(faustDSP){
     nentry.addEventListener("change",onValueChanged,false);
 
     function onValueChanged(e){
-      faustDSP.setParamValue(nentry.address,Number(e.target.value));
+      if(faustDSP != null) {
+        faustDSP.setParamValue(nentry.address,Number(e.target.value));
+      }
+      else {
+        ipcRenderer.send('setParamValue',nentry.address + ":" + Number(e.target.value));
+      }
     }
 
     return nentry;
@@ -296,11 +324,21 @@ function FaustUI(faustDSP){
     button.addEventListener("mouseup",onMouseUp,false);
 
     function onMouseDown(e){
-      faustDSP.setParamValue(button.address,1);
+      if(faustDSP != null) {
+        faustDSP.setParamValue(button.address,1);
+      }
+      else {
+        ipcRenderer.send('setParamValue',button.address + ":1");
+      }
     }
 
     function onMouseUp(e){
-      faustDSP.setParamValue(button.address,0);
+      if(faustDSP != null) {
+        faustDSP.setParamValue(button.address,0);
+      }
+      else {
+        ipcRenderer.send('setParamValue',button.address + ":0");
+      }
     }
 
     return button;
@@ -324,7 +362,12 @@ function FaustUI(faustDSP){
         status = 0;
         checkbox.style.backgroundColor = "rgb(220,220,220)";
       }
-      faustDSP.setParamValue(checkbox.address,status);
+      if(faustDSP != null) {
+        faustDSP.setParamValue(checkbox.address,status);
+      }
+      else {
+        ipcRenderer.send('setParamValue',checkbox.address + ":" + status);
+      }
     }
 
     return checkbox;
@@ -348,7 +391,13 @@ function FaustUI(faustDSP){
     barback.appendChild(bartop);
     
     function updateStatus(){
-      var barPosPC = (faustDSP.getParamValue(hbargraph.address)/hbargraph.range - hbargraph.min/hbargraph.range)*100;
+      if(faustDSP != null) {
+        var barPosPC = (faustDSP.getParamValue(hbargraph.address)/hbargraph.range - hbargraph.min/hbargraph.range)*100;
+      }
+      else {
+        var barPosPC = 
+        (ipcRenderer.sendSync('getParamValue', hbargraph.address)/hbargraph.range - hbargraph.min/hbargraph.range)*100;
+      }
       bartop.style.width = barPosPC + "%";
     }
     
@@ -375,7 +424,13 @@ function FaustUI(faustDSP){
     barback.appendChild(bartop);
     
     function updateStatus(){
-      var barPosPC = (faustDSP.getParamValue(vbargraph.address)/vbargraph.range - vbargraph.min/vbargraph.range)*100;
+      if(faustDSP != null) {
+        var barPosPC = (faustDSP.getParamValue(vbargraph.address)/vbargraph.range - vbargraph.min/vbargraph.range)*100;
+      }
+      else {
+        var barPosPC = 
+        (ipcRenderer.sendSync('getParamValue', vbargraph.address)/vbargraph.range - vbargraph.min/vbargraph.range)*100;
+      }
       bartop.style.height = barPosPC + "%";
     }
     
