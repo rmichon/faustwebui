@@ -5,14 +5,14 @@
 #include <node_object_wrap.h>
 #include "DspFaust.h"
 
-class FaustNode : public node::ObjectWrap {
+class DspFaustNode : public node::ObjectWrap {
 public:
   static void Init(v8::Handle<v8::Object> exports);
 
 private:
-  explicit FaustNode();
-  explicit FaustNode(int, int);
-  ~FaustNode();
+  explicit DspFaustNode();
+  explicit DspFaustNode(int, int);
+  ~DspFaustNode();
   static void start(const v8::FunctionCallbackInfo<v8::Value>& args);
   static void stop(const v8::FunctionCallbackInfo<v8::Value>& args);
   static void isRunning(const v8::FunctionCallbackInfo<v8::Value>& args);

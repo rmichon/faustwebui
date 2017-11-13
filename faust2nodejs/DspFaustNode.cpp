@@ -1,8 +1,8 @@
-#include "FaustNode.h"
+#include "DspFaustNode.h"
 
 using namespace v8;
 
-Persistent<Function> FaustNode::constructor;
+Persistent<Function> DspFaustNode::constructor;
 
 bool isInteger(const std::string & s) {
   if(s.empty() || ((!isdigit(s[0])) && (s[0] != '-') && (s[0] != '+'))) return false ;
@@ -11,24 +11,24 @@ bool isInteger(const std::string & s) {
   return (*p == 0) ;
 }
 
-FaustNode::FaustNode() {
+DspFaustNode::DspFaustNode() {
   dspFaust = new DspFaust();
 }
 
-FaustNode::FaustNode(int sample_rate, int buffer_size) {
+DspFaustNode::DspFaustNode(int sample_rate, int buffer_size) {
   dspFaust = new DspFaust(sample_rate, buffer_size);
 }
 
-FaustNode::~FaustNode() {
+DspFaustNode::~DspFaustNode() {
   delete dspFaust;
 }
 
-void FaustNode::Init(Handle<Object> exports) {
+void DspFaustNode::Init(Handle<Object> exports) {
   Isolate* isolate = Isolate::GetCurrent();
 
   // Prepare constructor template
   Local<FunctionTemplate> tpl = FunctionTemplate::New(isolate, New);
-  tpl->SetClassName(String::NewFromUtf8(isolate, "FaustNode"));
+  tpl->SetClassName(String::NewFromUtf8(isolate, "DspFaustNode"));
   tpl->InstanceTemplate()->SetInternalFieldCount(2);
 
   // Prototypes
@@ -55,29 +55,29 @@ void FaustNode::Init(Handle<Object> exports) {
   NODE_SET_PROTOTYPE_METHOD(tpl, "getParamInit", getParamInit);
 
   constructor.Reset(isolate, tpl->GetFunction());
-  exports->Set(String::NewFromUtf8(isolate, "FaustNode"),
+  exports->Set(String::NewFromUtf8(isolate, "DspFaustNode"),
                tpl->GetFunction());
 }
 
-void FaustNode::New(const FunctionCallbackInfo<Value>& args) {
+void DspFaustNode::New(const FunctionCallbackInfo<Value>& args) {
   Isolate* isolate = Isolate::GetCurrent();
   HandleScope scope(isolate);
 
   if (args.IsConstructCall()) {
-    // Invoked as constructor: `new FaustNode(...)`
-    FaustNode* faustNode;
+    // Invoked as constructor: `new DspFaustNode(...)`
+    DspFaustNode* dspFaustNode;
     if(args[0]->IsUndefined()){ // if arg 0 is undefined then should be same for arg1
-      faustNode = new FaustNode();
+      dspFaustNode = new DspFaustNode();
     }
     else{
-      faustNode = new FaustNode((int)args[0]->NumberValue(), 
+      dspFaustNode = new DspFaustNode((int)args[0]->NumberValue(), 
         (int)args[1]->NumberValue());
     }
-    faustNode->Wrap(args.This());
+    dspFaustNode->Wrap(args.This());
     args.GetReturnValue().Set(args.This());
   } 
   else {
-    // Invoked as plain function `FaustNode(...)`, turn into construct call.
+    // Invoked as plain function `DspFaustNode(...)`, turn into construct call.
     // TODO
     // const int argc = 1;
     // Local<Value> argv[argc] = { args[0] };
@@ -86,26 +86,26 @@ void FaustNode::New(const FunctionCallbackInfo<Value>& args) {
   }
 }
 
-void FaustNode::start(const v8::FunctionCallbackInfo<v8::Value>& args) {
+void DspFaustNode::start(const v8::FunctionCallbackInfo<v8::Value>& args) {
   Isolate* isolate = Isolate::GetCurrent();
-  FaustNode* fNode = ObjectWrap::Unwrap<FaustNode>(args.Holder());
+  DspFaustNode* fNode = ObjectWrap::Unwrap<DspFaustNode>(args.Holder());
   args.GetReturnValue().Set(Boolean::New(isolate, fNode->dspFaust->start()));
 }
 
-void FaustNode::stop(const v8::FunctionCallbackInfo<v8::Value>& args) {
-  FaustNode* fNode = ObjectWrap::Unwrap<FaustNode>(args.Holder());
+void DspFaustNode::stop(const v8::FunctionCallbackInfo<v8::Value>& args) {
+  DspFaustNode* fNode = ObjectWrap::Unwrap<DspFaustNode>(args.Holder());
   fNode->dspFaust->stop();
 }
 
-void FaustNode::isRunning(const v8::FunctionCallbackInfo<v8::Value>& args) {
+void DspFaustNode::isRunning(const v8::FunctionCallbackInfo<v8::Value>& args) {
   Isolate* isolate = Isolate::GetCurrent();
-  FaustNode* fNode = ObjectWrap::Unwrap<FaustNode>(args.Holder());
+  DspFaustNode* fNode = ObjectWrap::Unwrap<DspFaustNode>(args.Holder());
   args.GetReturnValue().Set(Boolean::New(isolate, fNode->dspFaust->isRunning()));
 }
 
-void FaustNode::keyOn(const v8::FunctionCallbackInfo<v8::Value>& args) {
+void DspFaustNode::keyOn(const v8::FunctionCallbackInfo<v8::Value>& args) {
   Isolate* isolate = Isolate::GetCurrent();
-  FaustNode* fNode = ObjectWrap::Unwrap<FaustNode>(args.Holder());
+  DspFaustNode* fNode = ObjectWrap::Unwrap<DspFaustNode>(args.Holder());
   if(!args[0]->IsUndefined() && !args[1]->IsUndefined()) {
     int pitch = (int) args[0]->NumberValue();
     int velocity = (int) args[1]->NumberValue();
@@ -117,9 +117,9 @@ void FaustNode::keyOn(const v8::FunctionCallbackInfo<v8::Value>& args) {
   }
 }
 
-void FaustNode::keyOff(const v8::FunctionCallbackInfo<v8::Value>& args) {
+void DspFaustNode::keyOff(const v8::FunctionCallbackInfo<v8::Value>& args) {
   Isolate* isolate = Isolate::GetCurrent();
-  FaustNode* fNode = ObjectWrap::Unwrap<FaustNode>(args.Holder());
+  DspFaustNode* fNode = ObjectWrap::Unwrap<DspFaustNode>(args.Holder());
   if(!args[0]->IsUndefined()) {
     int pitch = (int) args[0]->NumberValue();
     args.GetReturnValue().Set(
@@ -130,15 +130,15 @@ void FaustNode::keyOff(const v8::FunctionCallbackInfo<v8::Value>& args) {
   }
 }
 
-void FaustNode::newVoice(const v8::FunctionCallbackInfo<v8::Value>& args) {
+void DspFaustNode::newVoice(const v8::FunctionCallbackInfo<v8::Value>& args) {
   Isolate* isolate = Isolate::GetCurrent();
-  FaustNode* fNode = ObjectWrap::Unwrap<FaustNode>(args.Holder());
+  DspFaustNode* fNode = ObjectWrap::Unwrap<DspFaustNode>(args.Holder());
   args.GetReturnValue().Set(Number::New(isolate,fNode->dspFaust->newVoice()));
 }
 
-void FaustNode::deleteVoice(const v8::FunctionCallbackInfo<v8::Value>& args) {
+void DspFaustNode::deleteVoice(const v8::FunctionCallbackInfo<v8::Value>& args) {
   Isolate* isolate = Isolate::GetCurrent();
-  FaustNode* fNode = ObjectWrap::Unwrap<FaustNode>(args.Holder());
+  DspFaustNode* fNode = ObjectWrap::Unwrap<DspFaustNode>(args.Holder());
   if(!args[0]->IsUndefined()) {
     unsigned long voice = (unsigned long) args[0]->NumberValue();
     args.GetReturnValue().Set(
@@ -149,13 +149,13 @@ void FaustNode::deleteVoice(const v8::FunctionCallbackInfo<v8::Value>& args) {
   }
 }
 
-void FaustNode::allNotesOff(const v8::FunctionCallbackInfo<v8::Value>& args) {
-  FaustNode* fNode = ObjectWrap::Unwrap<FaustNode>(args.Holder());
+void DspFaustNode::allNotesOff(const v8::FunctionCallbackInfo<v8::Value>& args) {
+  DspFaustNode* fNode = ObjectWrap::Unwrap<DspFaustNode>(args.Holder());
   fNode->dspFaust->allNotesOff();
 }
 
-void FaustNode::propagateMidi(const v8::FunctionCallbackInfo<v8::Value>& args) {
-  FaustNode* fNode = ObjectWrap::Unwrap<FaustNode>(args.Holder());
+void DspFaustNode::propagateMidi(const v8::FunctionCallbackInfo<v8::Value>& args) {
+  DspFaustNode* fNode = ObjectWrap::Unwrap<DspFaustNode>(args.Holder());
   if(!args[0]->IsUndefined() && 
       !args[1]->IsUndefined() &&
       !args[2]->IsUndefined() &&
@@ -175,26 +175,26 @@ void FaustNode::propagateMidi(const v8::FunctionCallbackInfo<v8::Value>& args) {
   }
 }
 
-void FaustNode::getJSONUI(const v8::FunctionCallbackInfo<v8::Value>& args) {
+void DspFaustNode::getJSONUI(const v8::FunctionCallbackInfo<v8::Value>& args) {
   Isolate* isolate = Isolate::GetCurrent();
-  FaustNode* fNode = ObjectWrap::Unwrap<FaustNode>(args.Holder());
+  DspFaustNode* fNode = ObjectWrap::Unwrap<DspFaustNode>(args.Holder());
   args.GetReturnValue().Set(String::NewFromUtf8(isolate,fNode->dspFaust->getJSONUI()));
 }
 
-void FaustNode::getJSONMeta(const v8::FunctionCallbackInfo<v8::Value>& args) {
+void DspFaustNode::getJSONMeta(const v8::FunctionCallbackInfo<v8::Value>& args) {
   Isolate* isolate = Isolate::GetCurrent();
-  FaustNode* fNode = ObjectWrap::Unwrap<FaustNode>(args.Holder());
+  DspFaustNode* fNode = ObjectWrap::Unwrap<DspFaustNode>(args.Holder());
   args.GetReturnValue().Set(String::NewFromUtf8(isolate,fNode->dspFaust->getJSONMeta()));
 }
 
-void FaustNode::getParamsCount(const v8::FunctionCallbackInfo<v8::Value>& args) {
+void DspFaustNode::getParamsCount(const v8::FunctionCallbackInfo<v8::Value>& args) {
   Isolate* isolate = Isolate::GetCurrent();
-  FaustNode* fNode = ObjectWrap::Unwrap<FaustNode>(args.Holder());
+  DspFaustNode* fNode = ObjectWrap::Unwrap<DspFaustNode>(args.Holder());
   args.GetReturnValue().Set(Integer::New(isolate,fNode->dspFaust->getParamsCount()));
 }
 
-void FaustNode::setParamValue(const v8::FunctionCallbackInfo<v8::Value>& args) {
-  FaustNode* fNode = ObjectWrap::Unwrap<FaustNode>(args.Holder());
+void DspFaustNode::setParamValue(const v8::FunctionCallbackInfo<v8::Value>& args) {
+  DspFaustNode* fNode = ObjectWrap::Unwrap<DspFaustNode>(args.Holder());
   if(!args[0]->IsUndefined() && !args[1]->IsUndefined()) {
     std::string paramAddress(*v8::String::Utf8Value(args[0]->ToString()));
     float paramValue = (float) args[1]->NumberValue();
@@ -210,9 +210,9 @@ void FaustNode::setParamValue(const v8::FunctionCallbackInfo<v8::Value>& args) {
   }
 }
 
-void FaustNode::getParamValue(const v8::FunctionCallbackInfo<v8::Value>& args) {
+void DspFaustNode::getParamValue(const v8::FunctionCallbackInfo<v8::Value>& args) {
   Isolate* isolate = Isolate::GetCurrent();
-  FaustNode* fNode = ObjectWrap::Unwrap<FaustNode>(args.Holder());
+  DspFaustNode* fNode = ObjectWrap::Unwrap<DspFaustNode>(args.Holder());
   if(!args[0]->IsUndefined()) {
     std::string paramAddress(*v8::String::Utf8Value(args[0]->ToString()));
     if(isInteger(paramAddress)) {
@@ -229,8 +229,8 @@ void FaustNode::getParamValue(const v8::FunctionCallbackInfo<v8::Value>& args) {
   }
 }
 
-void FaustNode::setVoiceParamValue(const v8::FunctionCallbackInfo<v8::Value>& args) {
-  FaustNode* fNode = ObjectWrap::Unwrap<FaustNode>(args.Holder());
+void DspFaustNode::setVoiceParamValue(const v8::FunctionCallbackInfo<v8::Value>& args) {
+  DspFaustNode* fNode = ObjectWrap::Unwrap<DspFaustNode>(args.Holder());
   if(!args[0]->IsUndefined() && !args[1]->IsUndefined() && !args[2]->IsUndefined()) {
     std::string paramAddress(*v8::String::Utf8Value(args[0]->ToString()));
     unsigned long voice = (unsigned long) args[1]->NumberValue();
@@ -247,9 +247,9 @@ void FaustNode::setVoiceParamValue(const v8::FunctionCallbackInfo<v8::Value>& ar
   }
 }
 
-void FaustNode::getVoiceParamValue(const v8::FunctionCallbackInfo<v8::Value>& args) {
+void DspFaustNode::getVoiceParamValue(const v8::FunctionCallbackInfo<v8::Value>& args) {
   Isolate* isolate = Isolate::GetCurrent();
-  FaustNode* fNode = ObjectWrap::Unwrap<FaustNode>(args.Holder());
+  DspFaustNode* fNode = ObjectWrap::Unwrap<DspFaustNode>(args.Holder());
   if(!args[0]->IsUndefined() && !args[1]->IsUndefined()) {
     std::string paramAddress(*v8::String::Utf8Value(args[0]->ToString()));
     unsigned long voice = (unsigned long) args[1]->NumberValue();
@@ -267,9 +267,9 @@ void FaustNode::getVoiceParamValue(const v8::FunctionCallbackInfo<v8::Value>& ar
   }
 }
 
-void FaustNode::getParamAddress(const v8::FunctionCallbackInfo<v8::Value>& args) {
+void DspFaustNode::getParamAddress(const v8::FunctionCallbackInfo<v8::Value>& args) {
   Isolate* isolate = Isolate::GetCurrent();
-  FaustNode* fNode = ObjectWrap::Unwrap<FaustNode>(args.Holder());
+  DspFaustNode* fNode = ObjectWrap::Unwrap<DspFaustNode>(args.Holder());
   if(!args[0]->IsUndefined()) {
     int paramID = (int) args[0]->NumberValue();
     args.GetReturnValue().Set(String::NewFromUtf8(isolate,
@@ -280,9 +280,9 @@ void FaustNode::getParamAddress(const v8::FunctionCallbackInfo<v8::Value>& args)
   }
 }
 
-void FaustNode::getVoiceParamAddress(const v8::FunctionCallbackInfo<v8::Value>& args) {
+void DspFaustNode::getVoiceParamAddress(const v8::FunctionCallbackInfo<v8::Value>& args) {
   Isolate* isolate = Isolate::GetCurrent();
-  FaustNode* fNode = ObjectWrap::Unwrap<FaustNode>(args.Holder());
+  DspFaustNode* fNode = ObjectWrap::Unwrap<DspFaustNode>(args.Holder());
   if(!args[0]->IsUndefined() && !args[1]->IsUndefined()) {
     int paramID = (int) args[0]->NumberValue();
     unsigned long voice = (unsigned long) args[1]->NumberValue();
@@ -299,9 +299,9 @@ void FaustNode::getVoiceParamAddress(const v8::FunctionCallbackInfo<v8::Value>& 
   }
 }
 
-void FaustNode::getParamMin(const v8::FunctionCallbackInfo<v8::Value>& args) {
+void DspFaustNode::getParamMin(const v8::FunctionCallbackInfo<v8::Value>& args) {
   Isolate* isolate = Isolate::GetCurrent();
-  FaustNode* fNode = ObjectWrap::Unwrap<FaustNode>(args.Holder());
+  DspFaustNode* fNode = ObjectWrap::Unwrap<DspFaustNode>(args.Holder());
   if(!args[0]->IsUndefined()) {
     std::string paramAddress(*v8::String::Utf8Value(args[0]->ToString()));
     if(isInteger(paramAddress)) {
@@ -318,9 +318,9 @@ void FaustNode::getParamMin(const v8::FunctionCallbackInfo<v8::Value>& args) {
   }
 }
 
-void FaustNode::getParamMax(const v8::FunctionCallbackInfo<v8::Value>& args) {
+void DspFaustNode::getParamMax(const v8::FunctionCallbackInfo<v8::Value>& args) {
   Isolate* isolate = Isolate::GetCurrent();
-  FaustNode* fNode = ObjectWrap::Unwrap<FaustNode>(args.Holder());
+  DspFaustNode* fNode = ObjectWrap::Unwrap<DspFaustNode>(args.Holder());
   if(!args[0]->IsUndefined()) {
     std::string paramAddress(*v8::String::Utf8Value(args[0]->ToString()));
     if(isInteger(paramAddress)) {
@@ -337,9 +337,9 @@ void FaustNode::getParamMax(const v8::FunctionCallbackInfo<v8::Value>& args) {
   }
 }
 
-void FaustNode::getParamInit(const v8::FunctionCallbackInfo<v8::Value>& args) {
+void DspFaustNode::getParamInit(const v8::FunctionCallbackInfo<v8::Value>& args) {
   Isolate* isolate = Isolate::GetCurrent();
-  FaustNode* fNode = ObjectWrap::Unwrap<FaustNode>(args.Holder());
+  DspFaustNode* fNode = ObjectWrap::Unwrap<DspFaustNode>(args.Holder());
   if(!args[0]->IsUndefined()) {
     std::string paramAddress(*v8::String::Utf8Value(args[0]->ToString()));
     if(isInteger(paramAddress)) {

@@ -24,19 +24,19 @@ function createWindow () {
     slashes: true
   }))
   
-  var faustNode = new faust.FaustNode();
-  faustNode.start();
-  var voice = faustNode.keyOn(70,100);
-  //console.log("JS: " + faustNode.getParamInit("/Polyphonic/Voices/sine/freq"));
+  var dspFaustNode = new faust.DspFaustNode();
+  dspFaustNode.start();
+  var voice = dspFaustNode.keyOn(70,100);
+  //console.log("JS: " + dspFaustNode.getParamInit("/Polyphonic/Voices/sine/freq"));
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
-    faustNode.deleteVoice(voice);
-    faustNode.stop();
-    faustNode = null;
+    dspFaustNode.deleteVoice(voice);
+    dspFaustNode.stop();
+    dspFaustNode = null;
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.

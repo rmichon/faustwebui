@@ -7,7 +7,7 @@
       "cflags": [ "-march=native -Ofast" ],
       "ldflags": [ "-ljack","-lsndfile" ],
       "libraries": [ "-ljack","-lsndfile" ],
-      "sources": [ "faust.cpp","DspFaust.cpp","FaustNode.cpp" ]
+      "sources": [ "faust.cpp","DspFaust.cpp","DspFaustNode.cpp" ]
     }
   ]
 }
