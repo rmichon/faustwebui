@@ -49,6 +49,12 @@ void DspFaustNode::Init(Handle<Object> exports) {
   NODE_SET_PROTOTYPE_METHOD(tpl, "getParamMin", getParamMin);
   NODE_SET_PROTOTYPE_METHOD(tpl, "getParamMax", getParamMax);
   NODE_SET_PROTOTYPE_METHOD(tpl, "getParamInit", getParamInit);
+  NODE_SET_PROTOTYPE_METHOD(tpl, "getMetadata", getMetadata);
+  NODE_SET_PROTOTYPE_METHOD(tpl, "propagateAcc", propagateAcc);
+  NODE_SET_PROTOTYPE_METHOD(tpl, "setAccConverter", setAccConverter);
+  NODE_SET_PROTOTYPE_METHOD(tpl, "propagateGyr", propagateGyr);
+  NODE_SET_PROTOTYPE_METHOD(tpl, "setGyrConverter", setGyrConverter);
+  NODE_SET_PROTOTYPE_METHOD(tpl, "getCPULoad", getCPULoad);
 
   constructor.Reset(isolate, tpl->GetFunction());
   exports->Set(String::NewFromUtf8(isolate, "DspFaustNode"),
@@ -357,4 +363,95 @@ void DspFaustNode::getParamInit(const v8::FunctionCallbackInfo<v8::Value>& args)
     printf("Missing argument\n");
   }
 }
-  
+
+void DspFaustNode::getMetadata(const v8::FunctionCallbackInfo<v8::Value>& args) {
+  Isolate* isolate = Isolate::GetCurrent();
+  DspFaustNode* fNode = ObjectWrap::Unwrap<DspFaustNode>(args.Holder());
+  if(!args[0]->IsUndefined() && !args[1]->IsUndefined()) {
+    std::string paramAddress(*v8::String::Utf8Value(args[0]->ToString()));
+    std::string key(*v8::String::Utf8Value(args[1]->ToString()));
+    if(isInteger(paramAddress)) {
+      args.GetReturnValue().Set(String::NewFromUtf8(isolate,
+        fNode->DspFaust::getMetadata(std::stoi(paramAddress),key.c_str())));
+    }
+    else {
+      args.GetReturnValue().Set(String::NewFromUtf8(isolate,
+        fNode->DspFaust::getMetadata(paramAddress.c_str(),key.c_str())));
+    }
+  }
+  else {
+    printf("Missing argument\n");
+  }
+}  
+
+void DspFaustNode::propagateAcc(const v8::FunctionCallbackInfo<v8::Value>& args) {
+  DspFaustNode* fNode = ObjectWrap::Unwrap<DspFaustNode>(args.Holder());
+  if(!args[0]->IsUndefined() && !args[1]->IsUndefined()) {
+    int acc = (int) args[0]->NumberValue();
+    float value = (float) args[1]->NumberValue();
+    fNode->DspFaust::propagateAcc(acc,value);
+  }
+  else {
+    printf("Missing argument\n");
+  }
+}  
+
+void DspFaustNode::setAccConverter(const v8::FunctionCallbackInfo<v8::Value>& args) {
+  DspFaustNode* fNode = ObjectWrap::Unwrap<DspFaustNode>(args.Holder());
+  if(!args[0]->IsUndefined() && 
+      !args[1]->IsUndefined() &&
+      !args[2]->IsUndefined() &&
+      !args[3]->IsUndefined() &&
+      !args[4]->IsUndefined() &&
+      !args[5]->IsUndefined()) {
+    int p = (int) args[0]->NumberValue();
+    int acc = (int) args[1]->NumberValue();
+    int curve = (int) args[2]->NumberValue();
+    float amin = (float) args[3]->NumberValue();
+    float amid = (float) args[4]->NumberValue();
+    float amax = (float) args[5]->NumberValue();
+    fNode->DspFaust::setAccConverter(p,acc,curve,amin,amid,amax);
+  }
+  else {
+    printf("Missing argument\n");
+  }
+}  
+
+void DspFaustNode::propagateGyr(const v8::FunctionCallbackInfo<v8::Value>& args) {
+  DspFaustNode* fNode = ObjectWrap::Unwrap<DspFaustNode>(args.Holder());
+  if(!args[0]->IsUndefined() && !args[1]->IsUndefined()) {
+    int gyr = (int) args[0]->NumberValue();
+    float value = (float) args[1]->NumberValue();
+    fNode->DspFaust::propagateGyr(gyr,value);
+  }
+  else {
+    printf("Missing argument\n");
+  }
+} 
+
+void DspFaustNode::setGyrConverter(const v8::FunctionCallbackInfo<v8::Value>& args) {
+  DspFaustNode* fNode = ObjectWrap::Unwrap<DspFaustNode>(args.Holder());
+  if(!args[0]->IsUndefined() && 
+      !args[1]->IsUndefined() &&
+      !args[2]->IsUndefined() &&
+      !args[3]->IsUndefined() &&
+      !args[4]->IsUndefined() &&
+      !args[5]->IsUndefined()) {
+    int p = (int) args[0]->NumberValue();
+    int gyr = (int) args[1]->NumberValue();
+    int curve = (int) args[2]->NumberValue();
+    float amin = (float) args[3]->NumberValue();
+    float amid = (float) args[4]->NumberValue();
+    float amax = (float) args[5]->NumberValue();
+    fNode->DspFaust::setGyrConverter(p,gyr,curve,amin,amid,amax);
+  }
+  else {
+    printf("Missing argument\n");
+  }
+}   
+
+void DspFaustNode::getCPULoad(const v8::FunctionCallbackInfo<v8::Value>& args) {
+  Isolate* isolate = Isolate::GetCurrent();
+  DspFaustNode* fNode = ObjectWrap::Unwrap<DspFaustNode>(args.Holder());
+  args.GetReturnValue().Set(Integer::New(isolate,fNode->DspFaust::getCPULoad()));
+}
