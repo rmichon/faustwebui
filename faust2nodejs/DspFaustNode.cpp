@@ -11,17 +11,11 @@ bool isInteger(const std::string & s) {
   return (*p == 0) ;
 }
 
-DspFaustNode::DspFaustNode() {
-  dspFaust = new DspFaust();
-}
+DspFaustNode::DspFaustNode() {}
 
-DspFaustNode::DspFaustNode(int sample_rate, int buffer_size) {
-  dspFaust = new DspFaust(sample_rate, buffer_size);
-}
+DspFaustNode::DspFaustNode(int sample_rate, int buffer_size) {}
 
-DspFaustNode::~DspFaustNode() {
-  delete dspFaust;
-}
+DspFaustNode::~DspFaustNode() {}
 
 void DspFaustNode::Init(Handle<Object> exports) {
   Isolate* isolate = Isolate::GetCurrent();
@@ -89,18 +83,18 @@ void DspFaustNode::New(const FunctionCallbackInfo<Value>& args) {
 void DspFaustNode::start(const v8::FunctionCallbackInfo<v8::Value>& args) {
   Isolate* isolate = Isolate::GetCurrent();
   DspFaustNode* fNode = ObjectWrap::Unwrap<DspFaustNode>(args.Holder());
-  args.GetReturnValue().Set(Boolean::New(isolate, fNode->dspFaust->start()));
+  args.GetReturnValue().Set(Boolean::New(isolate, fNode->DspFaust::start()));
 }
 
 void DspFaustNode::stop(const v8::FunctionCallbackInfo<v8::Value>& args) {
   DspFaustNode* fNode = ObjectWrap::Unwrap<DspFaustNode>(args.Holder());
-  fNode->dspFaust->stop();
+  fNode->DspFaust::stop();
 }
 
 void DspFaustNode::isRunning(const v8::FunctionCallbackInfo<v8::Value>& args) {
   Isolate* isolate = Isolate::GetCurrent();
   DspFaustNode* fNode = ObjectWrap::Unwrap<DspFaustNode>(args.Holder());
-  args.GetReturnValue().Set(Boolean::New(isolate, fNode->dspFaust->isRunning()));
+  args.GetReturnValue().Set(Boolean::New(isolate, fNode->DspFaust::isRunning()));
 }
 
 void DspFaustNode::keyOn(const v8::FunctionCallbackInfo<v8::Value>& args) {
@@ -110,7 +104,7 @@ void DspFaustNode::keyOn(const v8::FunctionCallbackInfo<v8::Value>& args) {
     int pitch = (int) args[0]->NumberValue();
     int velocity = (int) args[1]->NumberValue();
     args.GetReturnValue().Set(
-      Number::New(isolate, fNode->dspFaust->keyOn(pitch,velocity)));
+      Number::New(isolate, fNode->DspFaust::keyOn(pitch,velocity)));
   }
   else {
     printf("Missing argument\n");
@@ -123,7 +117,7 @@ void DspFaustNode::keyOff(const v8::FunctionCallbackInfo<v8::Value>& args) {
   if(!args[0]->IsUndefined()) {
     int pitch = (int) args[0]->NumberValue();
     args.GetReturnValue().Set(
-      Integer::New(isolate, fNode->dspFaust->keyOff(pitch)));
+      Integer::New(isolate, fNode->DspFaust::keyOff(pitch)));
   }
   else {
     printf("Missing argument\n");
@@ -133,7 +127,7 @@ void DspFaustNode::keyOff(const v8::FunctionCallbackInfo<v8::Value>& args) {
 void DspFaustNode::newVoice(const v8::FunctionCallbackInfo<v8::Value>& args) {
   Isolate* isolate = Isolate::GetCurrent();
   DspFaustNode* fNode = ObjectWrap::Unwrap<DspFaustNode>(args.Holder());
-  args.GetReturnValue().Set(Number::New(isolate,fNode->dspFaust->newVoice()));
+  args.GetReturnValue().Set(Number::New(isolate,fNode->DspFaust::newVoice()));
 }
 
 void DspFaustNode::deleteVoice(const v8::FunctionCallbackInfo<v8::Value>& args) {
@@ -142,7 +136,7 @@ void DspFaustNode::deleteVoice(const v8::FunctionCallbackInfo<v8::Value>& args) 
   if(!args[0]->IsUndefined()) {
     unsigned long voice = (unsigned long) args[0]->NumberValue();
     args.GetReturnValue().Set(
-      Integer::New(isolate, fNode->dspFaust->deleteVoice(voice)));
+      Integer::New(isolate, fNode->DspFaust::deleteVoice(voice)));
   }
   else {
     printf("Missing argument\n");
@@ -151,7 +145,7 @@ void DspFaustNode::deleteVoice(const v8::FunctionCallbackInfo<v8::Value>& args) 
 
 void DspFaustNode::allNotesOff(const v8::FunctionCallbackInfo<v8::Value>& args) {
   DspFaustNode* fNode = ObjectWrap::Unwrap<DspFaustNode>(args.Holder());
-  fNode->dspFaust->allNotesOff();
+  fNode->DspFaust::allNotesOff();
 }
 
 void DspFaustNode::propagateMidi(const v8::FunctionCallbackInfo<v8::Value>& args) {
@@ -168,7 +162,7 @@ void DspFaustNode::propagateMidi(const v8::FunctionCallbackInfo<v8::Value>& args
     int channel = (int) args[3]->NumberValue();
     int data1 = (int) args[4]->NumberValue();
     int data2 = (int) args[5]->NumberValue();
-    fNode->dspFaust->propagateMidi(count,time,type,channel,data1,data2);
+    fNode->DspFaust::propagateMidi(count,time,type,channel,data1,data2);
   }
   else {
     printf("Missing argument\n");
@@ -178,19 +172,19 @@ void DspFaustNode::propagateMidi(const v8::FunctionCallbackInfo<v8::Value>& args
 void DspFaustNode::getJSONUI(const v8::FunctionCallbackInfo<v8::Value>& args) {
   Isolate* isolate = Isolate::GetCurrent();
   DspFaustNode* fNode = ObjectWrap::Unwrap<DspFaustNode>(args.Holder());
-  args.GetReturnValue().Set(String::NewFromUtf8(isolate,fNode->dspFaust->getJSONUI()));
+  args.GetReturnValue().Set(String::NewFromUtf8(isolate,fNode->DspFaust::getJSONUI()));
 }
 
 void DspFaustNode::getJSONMeta(const v8::FunctionCallbackInfo<v8::Value>& args) {
   Isolate* isolate = Isolate::GetCurrent();
   DspFaustNode* fNode = ObjectWrap::Unwrap<DspFaustNode>(args.Holder());
-  args.GetReturnValue().Set(String::NewFromUtf8(isolate,fNode->dspFaust->getJSONMeta()));
+  args.GetReturnValue().Set(String::NewFromUtf8(isolate,fNode->DspFaust::getJSONMeta()));
 }
 
 void DspFaustNode::getParamsCount(const v8::FunctionCallbackInfo<v8::Value>& args) {
   Isolate* isolate = Isolate::GetCurrent();
   DspFaustNode* fNode = ObjectWrap::Unwrap<DspFaustNode>(args.Holder());
-  args.GetReturnValue().Set(Integer::New(isolate,fNode->dspFaust->getParamsCount()));
+  args.GetReturnValue().Set(Integer::New(isolate,fNode->DspFaust::getParamsCount()));
 }
 
 void DspFaustNode::setParamValue(const v8::FunctionCallbackInfo<v8::Value>& args) {
@@ -199,10 +193,10 @@ void DspFaustNode::setParamValue(const v8::FunctionCallbackInfo<v8::Value>& args
     std::string paramAddress(*v8::String::Utf8Value(args[0]->ToString()));
     float paramValue = (float) args[1]->NumberValue();
     if(isInteger(paramAddress)) {
-      fNode->dspFaust->setParamValue(std::stoi(paramAddress),paramValue);
+      fNode->DspFaust::setParamValue(std::stoi(paramAddress),paramValue);
     }
     else {
-      fNode->dspFaust->setParamValue(paramAddress.c_str(),paramValue);
+      fNode->DspFaust::setParamValue(paramAddress.c_str(),paramValue);
     }
   }
   else {
@@ -217,11 +211,11 @@ void DspFaustNode::getParamValue(const v8::FunctionCallbackInfo<v8::Value>& args
     std::string paramAddress(*v8::String::Utf8Value(args[0]->ToString()));
     if(isInteger(paramAddress)) {
       args.GetReturnValue().Set(Number::New(isolate,
-        fNode->dspFaust->getParamValue(std::stoi(paramAddress))));
+        fNode->DspFaust::getParamValue(std::stoi(paramAddress))));
     }
     else {
       args.GetReturnValue().Set(Number::New(isolate,
-        fNode->dspFaust->getParamValue(paramAddress.c_str())));
+        fNode->DspFaust::getParamValue(paramAddress.c_str())));
     }
   }
   else {
@@ -236,10 +230,10 @@ void DspFaustNode::setVoiceParamValue(const v8::FunctionCallbackInfo<v8::Value>&
     unsigned long voice = (unsigned long) args[1]->NumberValue();
     float paramValue = (float) args[2]->NumberValue();
     if(isInteger(paramAddress)) {
-      fNode->dspFaust->setVoiceParamValue(std::stoi(paramAddress),voice,paramValue);
+      fNode->DspFaust::setVoiceParamValue(std::stoi(paramAddress),voice,paramValue);
     }
     else {
-      fNode->dspFaust->setVoiceParamValue(paramAddress.c_str(),voice,paramValue);
+      fNode->DspFaust::setVoiceParamValue(paramAddress.c_str(),voice,paramValue);
     }
   }
   else {
@@ -255,11 +249,11 @@ void DspFaustNode::getVoiceParamValue(const v8::FunctionCallbackInfo<v8::Value>&
     unsigned long voice = (unsigned long) args[1]->NumberValue();
     if(isInteger(paramAddress)) {
       args.GetReturnValue().Set(Number::New(isolate,
-        fNode->dspFaust->getVoiceParamValue(std::stoi(paramAddress),voice)));
+        fNode->DspFaust::getVoiceParamValue(std::stoi(paramAddress),voice)));
     }
     else {
       args.GetReturnValue().Set(Number::New(isolate,
-        fNode->dspFaust->getVoiceParamValue(paramAddress.c_str(),voice)));
+        fNode->DspFaust::getVoiceParamValue(paramAddress.c_str(),voice)));
     }
   }
   else {
@@ -273,7 +267,7 @@ void DspFaustNode::getParamAddress(const v8::FunctionCallbackInfo<v8::Value>& ar
   if(!args[0]->IsUndefined()) {
     int paramID = (int) args[0]->NumberValue();
     args.GetReturnValue().Set(String::NewFromUtf8(isolate,
-      fNode->dspFaust->getParamAddress(paramID)));
+      fNode->DspFaust::getParamAddress(paramID)));
   }
   else {
     printf("Missing argument\n");
@@ -286,12 +280,12 @@ void DspFaustNode::getVoiceParamAddress(const v8::FunctionCallbackInfo<v8::Value
   if(!args[0]->IsUndefined() && !args[1]->IsUndefined()) {
     int paramID = (int) args[0]->NumberValue();
     unsigned long voice = (unsigned long) args[1]->NumberValue();
-    const char* address = fNode->dspFaust->getVoiceParamAddress(paramID,voice);
+    const char* address = fNode->DspFaust::getVoiceParamAddress(paramID,voice);
     // TODO: smothing's not working here but don't really know what. probably
     // some typing issue
     printf("Toto: %s\n",address);
     //args.GetReturnValue().Set(String::NewFromUtf8(isolate,
-    //  fNode->dspFaust->getVoiceParamAddress(paramID,voice)));
+    //  fNode->DspFaust::getVoiceParamAddress(paramID,voice)));
       args.GetReturnValue().Set(String::NewFromUtf8(isolate,(char*)address));
   }
   else {
@@ -306,11 +300,11 @@ void DspFaustNode::getParamMin(const v8::FunctionCallbackInfo<v8::Value>& args) 
     std::string paramAddress(*v8::String::Utf8Value(args[0]->ToString()));
     if(isInteger(paramAddress)) {
       args.GetReturnValue().Set(Number::New(isolate,
-        fNode->dspFaust->getParamMin(std::stoi(paramAddress))));
+        fNode->DspFaust::getParamMin(std::stoi(paramAddress))));
     }
     else {
       args.GetReturnValue().Set(Number::New(isolate,
-        fNode->dspFaust->getParamMin(paramAddress.c_str())));
+        fNode->DspFaust::getParamMin(paramAddress.c_str())));
     }
   }
   else {
@@ -325,11 +319,11 @@ void DspFaustNode::getParamMax(const v8::FunctionCallbackInfo<v8::Value>& args) 
     std::string paramAddress(*v8::String::Utf8Value(args[0]->ToString()));
     if(isInteger(paramAddress)) {
       args.GetReturnValue().Set(Number::New(isolate,
-        fNode->dspFaust->getParamMax(std::stoi(paramAddress))));
+        fNode->DspFaust::getParamMax(std::stoi(paramAddress))));
     }
     else {
       args.GetReturnValue().Set(Number::New(isolate,
-        fNode->dspFaust->getParamMax(paramAddress.c_str())));
+        fNode->DspFaust::getParamMax(paramAddress.c_str())));
     }
   }
   else {
@@ -344,11 +338,11 @@ void DspFaustNode::getParamInit(const v8::FunctionCallbackInfo<v8::Value>& args)
     std::string paramAddress(*v8::String::Utf8Value(args[0]->ToString()));
     if(isInteger(paramAddress)) {
       args.GetReturnValue().Set(Number::New(isolate,
-        fNode->dspFaust->getParamInit(std::stoi(paramAddress))));
+        fNode->DspFaust::getParamInit(std::stoi(paramAddress))));
     }
     else {
       args.GetReturnValue().Set(Number::New(isolate,
-        fNode->dspFaust->getParamInit(paramAddress.c_str())));
+        fNode->DspFaust::getParamInit(paramAddress.c_str())));
     }
   }
   else {

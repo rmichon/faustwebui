@@ -5,7 +5,7 @@
 #include <node_object_wrap.h>
 #include "DspFaust.h"
 
-class DspFaustNode : public node::ObjectWrap {
+class DspFaustNode : public node::ObjectWrap, public DspFaust {
 public:
   static void Init(v8::Handle<v8::Object> exports);
 
@@ -44,8 +44,6 @@ private:
   
   static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
   static v8::Persistent<v8::Function> constructor;
-  
-  DspFaust* dspFaust;
 };
 
 #endif
