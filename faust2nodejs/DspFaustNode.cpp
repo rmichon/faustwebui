@@ -27,7 +27,7 @@ void DspFaustNode::Init(Handle<Object> exports) {
   tpl->InstanceTemplate()->SetInternalFieldCount(2);
 
   // Prototypes
-  NODE_SET_PROTOTYPE_METHOD(tpl, "deconstruct", deconstruct);
+  NODE_SET_PROTOTYPE_METHOD(tpl, "destroy", destroy);
   NODE_SET_PROTOTYPE_METHOD(tpl, "start", start);
   NODE_SET_PROTOTYPE_METHOD(tpl, "stop", stop);
   NODE_SET_PROTOTYPE_METHOD(tpl, "isRunning", isRunning);
@@ -82,16 +82,9 @@ void DspFaustNode::New(const FunctionCallbackInfo<Value>& args) {
   }
 }
 
-void DspFaustNode::deconstruct(const v8::FunctionCallbackInfo<v8::Value>& args) {
-  //Isolate* isolate = Isolate::GetCurrent();
-  //isolate->Dispose();
-  //printf("Disposed\n");
-  //V8::Dispose();
-  //V8::ShutdownPlatform();
+void DspFaustNode::destroy(const v8::FunctionCallbackInfo<v8::Value>& args) {
   DspFaustNode* fNode = ObjectWrap::Unwrap<DspFaustNode>(args.Holder());
-  //fNode->persistent().Dispose();
-  //fNode->MakeWeak();
-  //fNode->Unref();
+  fNode->persistent().Reset();
   delete fNode;
 }
 
