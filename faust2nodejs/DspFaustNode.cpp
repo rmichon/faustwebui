@@ -11,9 +11,10 @@ bool isInteger(const std::string & s) {
   return (*p == 0) ;
 }
 
-DspFaustNode::DspFaustNode() {}
+DspFaustNode::DspFaustNode() : DspFaust() {}
 
-DspFaustNode::DspFaustNode(int sample_rate, int buffer_size) {}
+DspFaustNode::DspFaustNode(int sample_rate, int buffer_size) : 
+  DspFaust(sample_rate, buffer_size) {}
 
 DspFaustNode::~DspFaustNode() {}
 
@@ -26,6 +27,7 @@ void DspFaustNode::Init(Handle<Object> exports) {
   tpl->InstanceTemplate()->SetInternalFieldCount(2);
 
   // Prototypes
+  NODE_SET_PROTOTYPE_METHOD(tpl, "deconstruct", deconstruct);
   NODE_SET_PROTOTYPE_METHOD(tpl, "start", start);
   NODE_SET_PROTOTYPE_METHOD(tpl, "stop", stop);
   NODE_SET_PROTOTYPE_METHOD(tpl, "isRunning", isRunning);
@@ -78,6 +80,19 @@ void DspFaustNode::New(const FunctionCallbackInfo<Value>& args) {
     // Local<Function> cons = Local<Function>::New(isolate, constructor);
     // args.GetReturnValue().Set(cons->NewInstance(argc, argv));
   }
+}
+
+void DspFaustNode::deconstruct(const v8::FunctionCallbackInfo<v8::Value>& args) {
+  //Isolate* isolate = Isolate::GetCurrent();
+  //isolate->Dispose();
+  //printf("Disposed\n");
+  //V8::Dispose();
+  //V8::ShutdownPlatform();
+  DspFaustNode* fNode = ObjectWrap::Unwrap<DspFaustNode>(args.Holder());
+  //fNode->persistent().Dispose();
+  //fNode->MakeWeak();
+  //fNode->Unref();
+  delete fNode;
 }
 
 void DspFaustNode::start(const v8::FunctionCallbackInfo<v8::Value>& args) {

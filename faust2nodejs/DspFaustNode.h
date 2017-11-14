@@ -13,6 +13,7 @@ private:
   explicit DspFaustNode();
   explicit DspFaustNode(int, int);
   ~DspFaustNode();
+  static void deconstruct(const v8::FunctionCallbackInfo<v8::Value>& args);
   static void start(const v8::FunctionCallbackInfo<v8::Value>& args);
   static void stop(const v8::FunctionCallbackInfo<v8::Value>& args);
   static void isRunning(const v8::FunctionCallbackInfo<v8::Value>& args);
