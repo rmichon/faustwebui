@@ -1,0 +1,7 @@
+#!/bin/bash
+
+cp binding-install.gyp /usr/local/share/faust/nodejs/binding.gyp
+cp DspFaustNode.cpp /usr/local/share/faust/nodejs
+cp DspFaustNode.h /usr/local/share/faust/nodejs
+cp faust.cpp /usr/local/share/faust/nodejs
+cp README.md /usr/local/share/faust/nodejs
