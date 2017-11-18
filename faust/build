@@ -1,3 +1,3 @@
 #!/bin/bash
 
-faust2nodejs -jack -electronv 1.7.9 osc.dsp 
+faust2nodejs -alsa -electronv 1.7.9 -debug osc.dsp 

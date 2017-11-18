@@ -30,7 +30,7 @@ function createWindow () {
     slashes: true
   }))
   
-  var dspFaustNode = new faust.DspFaustNode();
+  var dspFaustNode = new faust.DspFaustNode(44100,512);
   dspFaustNode.start();
   
   const {ipcMain} = require('electron')

@@ -40,4 +40,4 @@ with{
   gate = click+hold : min(1);
 };
 
-process = oscillators;
+process = oscillators <: _,_;
